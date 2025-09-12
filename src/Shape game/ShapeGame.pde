@@ -1,4 +1,6 @@
 //Cormac Stone || Aug 29 || Shape Game
+import processing.sound.*;
+SoundFile hit, win, hello;
 int x, y, score, tx, ty;
 int w, h, tw, th, a, b;
 int xspeed, yspeed;
@@ -6,17 +8,23 @@ int time;
 boolean l, r, u, d, got;
 boolean lcol, rcol, ucol, dcol;
 PImage pan, egg;
+boolean won, start, played;
 //sets up stuff
 void setup() {
-  //size(600, 400);
-  fullScreen();
+  size(600, 400);
+  //fullScreen();
   background(255);
+  played = false;
+  win = new SoundFile(this, "yay.wav");
+  hit = new SoundFile(this, "LegoYodaDeath sound.wav");
+  hello = new SoundFile(this, "Hello.wav");
   lcol = false;
   rcol = false;
   ucol= false;
   dcol= false;
-  x = 100;
-  y = 100;
+  start = true;
+  x = 500;
+  y = 500;
   w = 100;
   tw = 50;
   h = 100;
@@ -24,7 +32,7 @@ void setup() {
   xspeed = 20;
   yspeed = 20;
   score = 0;
-  //frameRate(60);
+  frameRate(100);
   pan = loadImage("FryingPan.png");
   egg = loadImage("Egg.png");
 }
@@ -33,19 +41,18 @@ void setup() {
 void draw() {
   fill(255, 0, 0);
   background(255);
-  scorePanel();
-  target();
-  noStroke();
-  fill(0, 0, 255);
-  //ellipse(x, y, w, h);
-  imageMode(CENTER);
-  image(pan, x, y);
-  movement();
-  fill(0);
-  text("yspeed " + yspeed, 200, 250);
-  text("xspeed " + xspeed, 200, 200);
-  time -= 1;
-  text("time left " + time, 200, 300);
+  if (start) {
+    startScreen();
+  } else {
+    scorePanel();
+    target();
+    player();
+    time -= 1;
+  }
+  if (won) {
+    endScreen();
+    noLoop();
+  }
 }
 
 //keypresses
@@ -97,21 +104,22 @@ void scorePanel() {
   fill(0);
   textSize(50);
   textMode(CENTER);
-  text("Score: " + score, (width/2)-20, 40);
+  text("Score: " + score, (width/2)-50, 40);
 }
 
 void target() {
-  fill(255, 0, 0);
-  rectMode(CENTER);
   float distance = dist(x, y, tx, ty);
-  text(distance, 200, 150);
-
   if (time == 0 || distance <= 120 && !got) {
     a = int(random(50, width-50));
     b = int(random(50, height-50));
     score += 100+time;
-    if (time == 0){
-      score -= 100;
+    hit.play();
+    if (hit.isPlaying()) {
+      hit.stop();
+      hit.play();
+    }
+    if (time == 0) {
+      score -= 200;
     }
     time = 200;
     got = true;
@@ -120,12 +128,12 @@ void target() {
     ty = b;
     got = false;
   }
-  fill(255, 0, 0);
-  rect(tx, ty, tw, th);
   imageMode(CENTER);
   image(egg, tx, ty);
 }
-void movement() {
+void player() {
+  imageMode(CENTER);
+  image(pan, x, y);
   if (!lcol) {
     if (l) {
       x-=xspeed;
@@ -171,4 +179,24 @@ void movement() {
   } else {
     dcol = false;
   }
+}
+void mousePressed() {
+  start = false;
+}
+void startScreen() {
+
+  if (!played) {
+    hello.play();
+    played = true;
+  }
+  textMode(CENTER);
+  fill(0);
+  textSize(150);
+  text("Hello", width/2-(2*w)+25, 200);
+  textSize(25);
+  text("click to play", width/2-w, 350);
+}
+void endScreen() {
+  win.play();
+  textSize(200);
 }
