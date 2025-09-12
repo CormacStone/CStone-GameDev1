@@ -9,12 +9,15 @@ boolean l, r, u, d, got;
 boolean lcol, rcol, ucol, dcol;
 PImage pan, egg;
 boolean won, start, played;
+
 //sets up stuff
 void setup() {
   size(600, 400);
+  textAllign(CENTER);
   //fullScreen();
   background(255);
   played = false;
+  won = false;
   win = new SoundFile(this, "yay.wav");
   hit = new SoundFile(this, "LegoYodaDeath sound.wav");
   hello = new SoundFile(this, "Hello.wav");
@@ -48,6 +51,9 @@ void draw() {
     target();
     player();
     time -= 1;
+    if (Score >= 10000) {
+      won = true;
+    }
   }
   if (won) {
     endScreen();
@@ -103,7 +109,6 @@ void scorePanel() {
   rect(0, 0, width, 50);
   fill(0);
   textSize(50);
-  textMode(CENTER);
   text("Score: " + score, (width/2)-50, 40);
 }
 
@@ -189,7 +194,6 @@ void startScreen() {
     hello.play();
     played = true;
   }
-  textMode(CENTER);
   fill(0);
   textSize(150);
   text("Hello", width/2-(2*w)+25, 200);
@@ -199,4 +203,7 @@ void startScreen() {
 void endScreen() {
   win.play();
   textSize(200);
+  text("You Win/n Yay", 200,200);
+  textSize(20);
+  text("no more game bruv,"500,500);
 }
