@@ -1,22 +1,28 @@
 //Cormac Stone || Aug 29 || Shape Game
 import processing.sound.*;
 SoundFile hit, win, hello;
-int x, y, score, tx, ty;
+ArrayList<Targets> target = new ArrayList<Targets>();
+int x, y, health, tx, ty;
 int w, h, tw, th, a, b;
 int xspeed, yspeed;
-int time;
+int distance;
+double time;
 boolean l, r, u, d, got;
 boolean lcol, rcol, ucol, dcol;
-PImage pan, egg;
-boolean won, start, played;
+PImage pan, egg, title;
+boolean won, lost, start, played, victory;
+Timer panT;
 
 //sets up stuff
 void setup() {
   size(600, 400);
-  textAllign(CENTER);
-  //fullScreen();
+  textAlign(CENTER);
+  fullScreen();
   background(255);
+  panT = new Timer(400);
+  panT.start();
   played = false;
+  victory = false;
   won = false;
   win = new SoundFile(this, "yay.wav");
   hit = new SoundFile(this, "LegoYodaDeath sound.wav");
@@ -34,9 +40,9 @@ void setup() {
   th = 50;
   xspeed = 20;
   yspeed = 20;
-  score = 0;
-  frameRate(100);
-  pan = loadImage("FryingPan.png");
+  health = 20;
+  frameRate(60);
+  title = loadImage("Title.png");
   egg = loadImage("Egg.png");
 }
 
@@ -44,18 +50,60 @@ void setup() {
 void draw() {
   fill(255, 0, 0);
   background(255);
+  time +=1;
   if (start) {
     startScreen();
   } else {
     scorePanel();
-    target();
     player();
-    time -= 1;
-    if (Score >= 10000) {
-      won = true;
+    if (time == 2000 /*&& t !=300*/) {
+      panT = new Timer(200);
+      println("200");
+    } else if (time == 5000) {
+      panT = new Timer(100);
+      println("100");
+    } else if (time == 9000) {
+      panT = new Timer(45);
+      println("45");
+    } else if (time >= 20000) {
+      panT = new Timer(0);
+      victory = true;
+      println(0);
+    }
+    if (panT.isFinished()) {
+      target.add(new Targets(int(random(0, 4))));
+      panT.start();
+      println("eggs:" + target.size());
+    }
+    for (int i = 0; i < target.size(); i++) {
+      Targets t = target.get(i);
+      distance = int(dist(x, y, t.x, t.y));
+      if (distance < t.w) {
+        hit.play();
+        if (hit.isPlaying()) {
+          hit.stop();
+          hit.play();
+        }
+        target.remove(t);
+        health -= 1;
+      }
+      if (t.reachedEdge()) {
+        target.remove(t);
+        //health+=100;
+      } else {
+        t.display();
+      }
+      t.move();
     }
   }
-  if (won) {
+  if (health >= 5000 || victory && time >= 30000) {
+    won = true;
+  }
+  if (health <= 0) {
+    lost = true;
+  }
+
+  if (won || lost) {
     endScreen();
     noLoop();
   }
@@ -109,36 +157,12 @@ void scorePanel() {
   rect(0, 0, width, 50);
   fill(0);
   textSize(50);
-  text("Score: " + score, (width/2)-50, 40);
+  text("Health Left: " + health, (width/2)-50, 40);
 }
 
-void target() {
-  float distance = dist(x, y, tx, ty);
-  if (time == 0 || distance <= 120 && !got) {
-    a = int(random(50, width-50));
-    b = int(random(50, height-50));
-    score += 100+time;
-    hit.play();
-    if (hit.isPlaying()) {
-      hit.stop();
-      hit.play();
-    }
-    if (time == 0) {
-      score -= 200;
-    }
-    time = 200;
-    got = true;
-  } else {
-    tx = a;
-    ty = b;
-    got = false;
-  }
-  imageMode(CENTER);
-  image(egg, tx, ty);
-}
 void player() {
   imageMode(CENTER);
-  image(pan, x, y);
+  image(egg, x, y);
   if (!lcol) {
     if (l) {
       x-=xspeed;
@@ -189,21 +213,33 @@ void mousePressed() {
   start = false;
 }
 void startScreen() {
-
   if (!played) {
     hello.play();
     played = true;
   }
   fill(0);
-  textSize(150);
-  text("Hello", width/2-(2*w)+25, 200);
+  title.resize(750,750);
+  image(title, width/2-300, 40);
   textSize(25);
-  text("click to play", width/2-w, 350);
+  text("Survive As Long As Possible", width/2, 450);
+  textSize(15);
+  text("by Cormac  Stone 2025", width/2, 475);
+  textSize(50);
+  text("click to play", width/2, 550);
 }
 void endScreen() {
-  win.play();
-  textSize(200);
-  text("You Win/n Yay", 200,200);
-  textSize(20);
-  text("no more game bruv,"500,500);
+  background(255);
+  if (won) {
+    win.play();
+    textSize(200);
+    text("You Win\n Yay", width/2, 200);
+    textSize(20);
+    text("no more game bruv,", width/2, 550);
+  } else if (lost) {
+    textSize(200);
+    text("Game Over", width/2, 200);
+    textSize(30);
+    text("no more game bruv", width/2, 450);
+    text("Total Time alive " + time/100 + " seconds", width/2, 600);
+  }
 }
