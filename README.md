@@ -9,6 +9,6 @@
 
 * [Windows](https://github.com/CormacStone/CStone-GameDev1/tree/main/src/SpaceGame/windows-amd64)
 
-* [MacOS](https://github.com/CormacStone/CStone-GameDev1/tree/main/src/SpaceGame/macos-x86_64)
+* [MacOS](https://github.com/CormacStone/CStone-GameDev1/tree/main/src/SpaceGame/macos-aarch64)
 
 ![Running Space Game](https://github.com/CormacStone/CStone-GameDev1/blob/main/images/RunningSpaceGame.png)
