@@ -7,7 +7,8 @@ ArrayList<Laser> lasers = new ArrayList<Laser>();
 ArrayList<Rock> rocks = new ArrayList<Rock>();
 ArrayList<PowUp> powups = new ArrayList<PowUp>();
 ArrayList<Star> stars = new ArrayList<Star>();
-int score, level;
+int score, level; 
+float lasersShot, lasersHit;
 boolean play;
 Timer rockTimer;
 Timer powupTimer;
@@ -79,6 +80,7 @@ void draw() {
             rocks.remove(r);
             lasers.remove(l);
             score+=100;
+            lasersHit +=1;
           }
         }
         if (l.reachedTop())
@@ -157,14 +159,18 @@ void infoPanel() {
     fill(127, 127);
     rectMode(CENTER);
     noStroke();
-    rect(60, height-50, 125, 100);
+    rect(60, height-50, 130, 110);
     fill(255);
     textAlign(CENTER);
     textSize(20);
-    text("score:" + score, 57, height-70);
-    text("level:" + level, 57, height-50);
-    text("health:" + s1.health, 57, height-30);
-    text("ammo:" + s1.ammo, 57, height-10);
+    text("score:" + score, 63, height-70);
+    text("level:" + level, 63, height-50);
+    text("health:" + s1.health, 63, height-30);
+    text("ammo:" + s1.ammo, 63, height-10);
+    if (lasersShot > 0) {
+      float  accuracy = lasersHit*10  / lasersShot*10;
+      text("Accuracy: " + accuracy  + "%", 63, height-90);
+    }
   }
 }
 
@@ -201,17 +207,20 @@ void mousePressed() {
       lasers.add(new Laser(s1.x, s1.y));
       laser.play();
       s1.ammo -= 1;
+      lasersShot += 1;
     } else  if (s1.turretCount == 2) {
       lasers.add(new Laser(s1.x-15, s1.y));
       lasers.add(new Laser(s1.x+15, s1.y));
       laser.play();
       s1.ammo -= 2;
+      lasersShot +=2;
     } else  if (s1.turretCount == 3) {
       lasers.add(new Laser(s1.x, s1.y));
       lasers.add(new Laser(s1.x+30, s1.y));
       lasers.add(new Laser(s1.x-30, s1.y));
       laser.play();
       s1.ammo -= 3;
+      lasersShot +=1;
     } else  if (s1.turretCount == 4) {
       lasers.add(new Laser(s1.x-15, s1.y));
       lasers.add(new Laser(s1.x+15, s1.y));
@@ -219,6 +228,7 @@ void mousePressed() {
       lasers.add(new Laser(s1.x+45, s1.y));
       laser.play();
       s1.ammo -= 4;
+      lasersShot +=1;
     } else  if (s1.turretCount == 5) {
       lasers.add(new Laser(s1.x, s1.y));
       lasers.add(new Laser(s1.x+30, s1.y));
@@ -227,6 +237,7 @@ void mousePressed() {
       lasers.add(new Laser(s1.x-60, s1.y));
       laser.play();
       s1.ammo -= 5;
+      lasersShot +=1;
     }
   } else {
     fill(255, 150);
