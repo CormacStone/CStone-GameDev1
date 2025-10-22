@@ -3,6 +3,7 @@
 
 
 ### SpaceGame
-* This is my Space Game
+###### This is my Space Game, It is a top down 2D game that has the user
+
 [https://github.com/CormacStone/CStone-GameDev1/tree/main/src/SpaceGame](https://github.com/CormacStone/CStone-GameDev1/tree/main/src/SpaceGame)
 ![Running Space Game](https://github.com/CormacStone/CStone-GameDev1/blob/main/images/RunningSpaceGame.png)
