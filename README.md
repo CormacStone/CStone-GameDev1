@@ -15,5 +15,5 @@
 
 ### Anyone Can Cook
 * Our term 2 group project
-
-[https://github.com/CormacStone/Anyone-Can-Cook](https://github.com/CormacStone/Anyone-Can-Cook)
+  
+* [https://github.com/CormacStone/Anyone-Can-Cook](https://github.com/CormacStone/Anyone-Can-Cook)
